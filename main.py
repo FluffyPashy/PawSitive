@@ -3,7 +3,6 @@ from discord.ext import commands
 from ruamel import yaml
 from ruamel.yaml import YAML
 from pathlib import Path
-import os
 
 yaml = YAML()
 
