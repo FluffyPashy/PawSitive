@@ -12,6 +12,9 @@ Presence:
 # Defines where you want the bot to write the log messages #! The Log Channel must be an ID
 Log Channel ID: 774266721321615370
 
+Roles:
+  Dev: "Developer"
+  
 # Change the color of the embeds the bot send when msg is embedded
 Embed Settings:
   Color:

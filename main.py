@@ -117,5 +117,27 @@ async def on_ready():
 async def change_presence():
     await bot.change_presence(activity=discord.Game(next(presence)), status=discord.Status.online)
 
+# Restart command
+@bot.command(name = "restart", aliases = ["rs"], help = "Restarts PawSitive(Bot)")
+@commands.has_role(config['Roles']['Dev'])
+async def restart(ctx):
+    bot_restart = discord.Embed(
+        title = f"{bot.user.name} is restarting!",
+        color = embed_warning,
+        timestamp = datetime.datetime.now(datetime.timezone.utc)
+    )
+    bot_restart.set_author(
+        name = ctx.author.name,
+        icon_url = ctx.author.avatar_url
+    )
+    # additional footer
+    bot_restart.set_footer(
+        text = "Systemconsole",
+        icon_url = "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e4/Infobox_info_icon.svg/160px-Infobox_info_icon.svg.png"
+    )
+    log_channel = bot.get_channel(log_channel_id)
+    await log_channel.send(embed = bot_restart)
+    await bot.close()
+
 # Run bot cmd
-bot.run(secrets['Token'])
+bot.run(secrets['Token'], bot=True, reconnect=True)
