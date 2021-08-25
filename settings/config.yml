@@ -34,4 +34,8 @@ Embed Settings:
       r: 252
       g: 0
       b: 0
+    Moderation:
+      r: 0
+      g: 0
+      b: 255
       
