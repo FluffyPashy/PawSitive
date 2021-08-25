@@ -36,25 +36,30 @@ presence = cycle([config['Presence']['Display1'], config['Presence']['Display2']
 log_channel_id = config['Log Channel ID']
 
 # Embed color types
-embed_info = discord.Color.from_rgb(
+embed_color_info = discord.Color.from_rgb(
     config['Embed Settings']['Color']['Info']['r'],
     config['Embed Settings']['Color']['Info']['g'],
     config['Embed Settings']['Color']['Info']['b']
 )
-embed_update = discord.Color.from_rgb(
+embed_color_update = discord.Color.from_rgb(
     config['Embed Settings']['Color']['Update']['r'],
     config['Embed Settings']['Color']['Update']['g'],
     config['Embed Settings']['Color']['Update']['b']
 )
-embed_announcement = discord.Color.from_rgb(
+embed_color_announcement = discord.Color.from_rgb(
     config['Embed Settings']['Color']['Announcement']['r'],
     config['Embed Settings']['Color']['Announcement']['g'],
     config['Embed Settings']['Color']['Announcement']['b']
 )
-embed_warning = discord.Color.from_rgb(
+embed_color_warning = discord.Color.from_rgb(
     config['Embed Settings']['Color']['Warning']['r'],
     config['Embed Settings']['Color']['Warning']['g'],
     config['Embed Settings']['Color']['Warning']['b']
+)
+embed_color_moderation = discord.Color.from_rgb(
+    config['Embed Settings']['Color']['Moderation']['r'],
+    config['Embed Settings']['Color']['Moderation']['g'],
+    config['Embed Settings']['Color']['Moderation']['b']
 )
 
 class Greetings(commands.Cog):
@@ -68,13 +73,13 @@ intents.members = True
 
 bot = commands.Bot(config['Prefix'], intents = intents)
 
-# Load cogs
+# Initial cog loading #?  
 initial_extensions = sorted([
-    "Cogs.help",
-    "Cogs.ping"
+    "Cogs.error_handler",
+    "Cogs.clear"
 ])
 
-print(f"{console_seperator}\nInitializing Cogs:")
+print(f"{console_seperator}\nFailed/Disabled Cogs:")
 
 if __name__ == '__main__':
     for extension in initial_extensions:
@@ -82,6 +87,7 @@ if __name__ == '__main__':
             bot.load_extension(extension)
         except Exception as e:
             print(f"Failed to load extension {extension}")
+            raise
 
 print(f"{console_seperator}\n")
 
@@ -96,7 +102,7 @@ async def on_ready():
     # Bot start embed message
     bot_start = discord.Embed(
         title = f"{bot.user.name} is now Online!",
-        color = embed_info,
+        color = embed_color_info,
         timestamp = datetime.datetime.now(datetime.timezone.utc)
     )
     # additional footer
@@ -117,13 +123,13 @@ async def on_ready():
 async def change_presence():
     await bot.change_presence(activity=discord.Game(next(presence)), status=discord.Status.online)
 
-# Restart command
-@bot.command(name = "restart", aliases = ["rs"], help = "Restarts PawSitive(Bot)")
+# Restart command #! Only works with the given start scripts
+@bot.command(name = "restart", aliases = ["rs"], hidden = True)
 @commands.has_role(config['Roles']['Dev'])
 async def restart(ctx):
     bot_restart = discord.Embed(
         title = f"{bot.user.name} is restarting!",
-        color = embed_warning,
+        color = embed_color_warning,
         timestamp = datetime.datetime.now(datetime.timezone.utc)
     )
     bot_restart.set_author(
@@ -139,5 +145,48 @@ async def restart(ctx):
     await log_channel.send(embed = bot_restart)
     await bot.close()
 
-# Run bot cmd
+# Reload all or single extentions
+@bot.command(name = "cogs_reload", aliases = ["crl"], hidden = True, pass_context = True)
+@commands.has_role(config['Roles']['Dev'])
+async def reload_extention(ctx, args = None):
+    # Defining log channel
+    log_channel = bot.get_channel(log_channel_id)
+
+    # Reloads all extentions if no arguments were given
+    await ctx.channel.purge(limit = 1)
+    if args == None:
+        if __name__ == '__main__':
+            for extension in initial_extensions:
+                try:
+                    bot.reload_extension(extension)
+                    print(f"Extention_Reload: {extension} has been reloaded")
+                except Exception as e:
+                    print(f"Failed to reload extension {extension}")
+        
+        crlmsg = discord.Embed(
+            title = "Extention reload",
+            description = f"All extentions have been reloaded by {ctx.author}",
+            color = embed_color_warning
+        )
+        log_channel = bot.get_channel(log_channel_id)
+        await log_channel.send(embed = crlmsg)
+        
+    # Reloads the given extention #! must be the extentions file name
+    elif args != None:
+        # name = (f"Cogs.{args}")
+        bot.reload_extension(f"Cogs.{args}")
+        
+        singlecrlmsg = discord.Embed(
+            title = "Extention reload",
+            description = f"{args} has been reloaded by {ctx.author}",
+            color = embed_color_warning
+        )
+        log_channel = bot.get_channel(log_channel_id)
+        await log_channel.send(embed = singlecrlmsg)
+        
+    else:
+        raise
+    
+    print(f"CMD_Watch: cogs_reload {args} has been executed by {ctx.author}")
+
 bot.run(secrets['Token'], bot=True, reconnect=True)
