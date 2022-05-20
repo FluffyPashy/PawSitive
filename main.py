@@ -36,31 +36,11 @@ presence = cycle([config['Presence']['Display1'], config['Presence']['Display2']
 log_channel_id = config['Log Channel ID']
 
 # Embed color types
-embed_color_info = discord.Color.from_rgb(
-    config['Embed Settings']['Color']['Info']['r'],
-    config['Embed Settings']['Color']['Info']['g'],
-    config['Embed Settings']['Color']['Info']['b']
-)
-embed_color_update = discord.Color.from_rgb(
-    config['Embed Settings']['Color']['Update']['r'],
-    config['Embed Settings']['Color']['Update']['g'],
-    config['Embed Settings']['Color']['Update']['b']
-)
-embed_color_announcement = discord.Color.from_rgb(
-    config['Embed Settings']['Color']['Announcement']['r'],
-    config['Embed Settings']['Color']['Announcement']['g'],
-    config['Embed Settings']['Color']['Announcement']['b']
-)
-embed_color_warning = discord.Color.from_rgb(
-    config['Embed Settings']['Color']['Warning']['r'],
-    config['Embed Settings']['Color']['Warning']['g'],
-    config['Embed Settings']['Color']['Warning']['b']
-)
-embed_color_moderation = discord.Color.from_rgb(
-    config['Embed Settings']['Color']['Moderation']['r'],
-    config['Embed Settings']['Color']['Moderation']['g'],
-    config['Embed Settings']['Color']['Moderation']['b']
-)
+embed_color_info = discord.Color.from_rgb(255, 186, 3)
+embed_color_update = discord.Color.from_rgb(161, 252, 3)
+embed_color_announcement = discord.Color.from_rgb(127, 3, 252)
+embed_color_warning = discord.Color.from_rgb(252, 0, 0)
+embed_color_moderation = discord.Color.from_rgb(0, 0, 255)
 
 class Greetings(commands.Cog):
     def __init__(self, bot:commands.Bot):

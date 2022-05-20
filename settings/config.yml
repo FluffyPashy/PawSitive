@@ -9,33 +9,17 @@ Presence:
   Display2: "Doing PawSitive things"
   Display3: "help"
 
-# Defines where you want the bot to write the log messages #! The Log Channel must be an ID
-Log Channel ID: 774266721321615370
-
 Roles:
   Dev: "Developer"
   
-# Change the color of the embeds the bot send when msg is embedded
-Embed Settings:
-  Color:
-    Info:
-      r: 252
-      g: 186
-      b: 3
-    Update:
-      r: 161
-      g: 252
-      b: 3
-    Announcement:
-      r: 127
-      g: 3
-      b: 252
-    Warning:
-      r: 252
-      g: 0
-      b: 0
-    Moderation:
-      r: 0
-      g: 0
-      b: 255
-      
+# LoggerSettings
+# Defines where you want the bot to write the log messages #! The Log Channel must be an ID
+Log Channel ID: 774266721321615370
+
+# While CustomLog is set to false, all modules will be active.
+CustomLog: false
+LogMemberJoin: true
+LogMemberLeave: true
+LogMsg: true
+LogMsgDel: true
+LogMsgEdit: true

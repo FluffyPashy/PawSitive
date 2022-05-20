@@ -19,16 +19,8 @@ cwd = str(cwd)
 with open((cwd+'/settings/config.yml'), "r", encoding="utf-8") as file:
     config = yaml.load(file)
 
-embed_color_moderation = discord.Color.from_rgb(
-    config['Embed Settings']['Color']['Moderation']['r'],
-    config['Embed Settings']['Color']['Moderation']['g'],
-    config['Embed Settings']['Color']['Moderation']['b']
-)
-embed_color_warning = discord.Color.from_rgb(
-    config['Embed Settings']['Color']['Warning']['r'],
-    config['Embed Settings']['Color']['Warning']['g'],
-    config['Embed Settings']['Color']['Warning']['b']
-)
+embed_color_moderation = discord.Color.from_rgb(0, 0, 255)
+embed_color_warning = discord.Color.from_rgb(252, 0, 0)
 
 class Clear(commands.Cog):
 
@@ -47,7 +39,7 @@ class Clear(commands.Cog):
 
         def mess_is_not_pinned(mess):
             return not mess.pinned
-
+    
         if args is None:
             await ctx.channel.purge(check = mess_is_not_pinned)
             
@@ -75,7 +67,6 @@ class Clear(commands.Cog):
                     description = '**{}** message has been deleted in #'.format(len(deleted) - 1) + f'{ctx.channel} by {ctx.author}',
                     color = embed_color_moderation)
                 await ctx.send(embed = clearmsgdigit, delete_after = 10)
-
         else:
             await ctx.channel.purge(limit = 1)
             invalidarg = discord.Embed(
