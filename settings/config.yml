@@ -9,6 +9,14 @@ Presence:
   Display2: "Doing PawSitive things"
   Display3: "help"
 
+Reaction Roles:
+  Verify:
+    Verify Role: "Verified"
+    Message ID: 977592456348586034
+    Emoji: ✅
+    Verify Message: "TestWelcome"
+
+
 Roles:
   Dev: "Developer"
   

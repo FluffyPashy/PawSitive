@@ -12,7 +12,8 @@ import datetime
 # Define some things
 ########################################################################
 
-# Folder struc and pathsystem
+# Folder struc and pathsystem 
+
 yaml = YAML()
 
 cwd = Path(__file__).parents[0]
@@ -56,7 +57,9 @@ bot = commands.Bot(config['Prefix'], intents = intents)
 # Initial cog loading #?  
 initial_extensions = sorted([
     "Cogs.error_handler",
-    "Cogs.clear"
+    "Cogs.clear",
+    "Cogs.reactionrole",
+    "Cogs.userinfo"
 ])
 
 print(f"{console_seperator}\nFailed/Disabled Cogs:")
