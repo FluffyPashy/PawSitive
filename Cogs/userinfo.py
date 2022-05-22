@@ -19,9 +19,6 @@ cwd = str(cwd)
 with open((cwd+'/settings/config.yml'), "r", encoding="utf-8") as file:
     config = yaml.load(file)
 
-embed_color_moderation = discord.Color.from_rgb(0, 0, 255)
-embed_color_warning = discord.Color.from_rgb(252, 0, 0)
-
 class userinfo(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
@@ -34,19 +31,25 @@ class userinfo(commands.Cog):
     #if command userinfo executed send embed message with information from given userid [WIP]
     @commands.command()
     async def userinfo(self, ctx, user: discord.Member):
-        embed = discord.Embed(title=user.name, description=f"{user.mention}'s info", color=embed_color_moderation)
-        embed.add_field(name="User ID", value=user.id)
-        embed.add_field(name="Account Created", value=user.created_at)
-        embed.add_field(name="Joined Server", value=user.joined_at)
-        embed.add_field(name="Status", value=user.status)
-        embed.add_field(name="Nickname", value=user.nick)
-        embed.add_field(name="Top Role", value=user.top_role)
-        embed.add_field(name="Playing", value=user.activity)
-        embed.add_field(name="Roles", value=user.roles)
-        embed.add_field(name="Voice Channel", value=user.voice)
-        embed.set_thumbnail(url=user.avatar_url)
-        embed.set_footer(text=f"Requested by {ctx.author}", icon_url=ctx.author.avatar_url)
-        await ctx.send(embed=embed, delete_after=10)
+        #delete command message
+        await ctx.message.delete()
+
+        #if user is not in server send embed message with error
+        if user not in ctx.guild.members:
+            embed = discord.Embed(title="Error", description="User not found in server", color= int(config['Embed Color']['Warning'], 16))
+            await ctx.send(embed=embed)
+        else:
+            #create embed message with information from given userid
+            embed = discord.Embed(title=f"{user}", description=f"{user.mention}", color= int(config['Embed Color']['Info'], 16))
+            embed.set_thumbnail(url=user.avatar_url)
+            embed.add_field(name="User ID", value=user.id, inline=True)
+            embed.add_field(name="Nickname", value=user.nick, inline=True)
+            embed.add_field(name="Status", value=user.status, inline=True)
+            embed.add_field(name="Joined Server", value=user.joined_at, inline=True)
+            embed.add_field(name="Created Account", value=user.created_at, inline=True)
+            embed.add_field(name="Roles", value=len(user.roles), inline=True)
+            #send embed message
+            await ctx.send(embed=embed)
 
 
 def setup(bot):

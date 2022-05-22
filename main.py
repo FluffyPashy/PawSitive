@@ -19,29 +19,36 @@ yaml = YAML()
 cwd = Path(__file__).parents[0]
 cwd = str(cwd)
 
+# Debugging and cleaner console log
+console_seperator = "\n" + ("#" * 50) + "\n"
+
+#Load settings/secrets.yml
+if Path(cwd+'/settings/secrets.yml').is_file():
+    with open((cwd+'/settings/secrets.yml'), "r", encoding="utf-8") as file:
+        secrets = yaml.load(file)
+        #Check if Token is empty, if so, wait for user input
+        if secrets['Token'] == None:
+            print(f"{console_seperator}")
+            print(f"Please enter bot Token:")
+            secrets['Token'] = input()
+            with open((cwd+'/settings/secrets.yml'), "w", encoding="utf-8") as file:
+                yaml.dump(secrets, file)
+            print("\nToken has been saved\n\n")
+
+
 # Loads in settings/config.yml
 with open((cwd+'/settings/config.yml'), "r", encoding="utf-8") as file:
     config = yaml.load(file)
 
-# Loads in settings/secrets.yml
-with open((cwd+'/settings/secrets.yml'), "r", encoding="utf-8") as file:
-    secrets = yaml.load(file)
 
-# Debugging and cleaner console log
-console_seperator = "\n" + ("#" * 50) + "\n"
+#check if data/{guild_name}.yml exists load it, if not create it
+
 
 # Status cycle function
 presence = cycle([config['Presence']['Display1'], config['Presence']['Display2'], config['Prefix'] + config['Presence']['Display3'],])
 
 # Log Channel
 log_channel_id = config['Log Channel ID']
-
-# Embed color types
-embed_color_info = discord.Color.from_rgb(255, 186, 3)
-embed_color_update = discord.Color.from_rgb(161, 252, 3)
-embed_color_announcement = discord.Color.from_rgb(127, 3, 252)
-embed_color_warning = discord.Color.from_rgb(252, 0, 0)
-embed_color_moderation = discord.Color.from_rgb(0, 0, 255)
 
 class Greetings(commands.Cog):
     def __init__(self, bot:commands.Bot):
@@ -59,7 +66,8 @@ initial_extensions = sorted([
     "Cogs.error_handler",
     "Cogs.clear",
     "Cogs.reactionrole",
-    "Cogs.userinfo"
+    "Cogs.userinfo",
+    "Cogs.levelsystem"
 ])
 
 print(f"{console_seperator}\nFailed/Disabled Cogs:")
@@ -85,9 +93,11 @@ async def on_ready():
     # Bot start embed message
     bot_start = discord.Embed(
         title = f"{bot.user.name} is now Online!",
-        color = embed_color_info,
+        color = int(config['Embed Color']['Info'], 16),
         timestamp = datetime.datetime.now(datetime.timezone.utc)
     )
+    
+
     # additional footer
     bot_start.set_footer(
         text = "Systemconsole",
@@ -112,7 +122,7 @@ async def change_presence():
 async def restart(ctx):
     bot_restart = discord.Embed(
         title = f"{bot.user.name} is restarting!",
-        color = embed_color_warning,
+        color = int(config['embed color']['warning'], 16),
         timestamp = datetime.datetime.now(datetime.timezone.utc)
     )
     bot_restart.set_author(
@@ -149,7 +159,7 @@ async def reload_extention(ctx, args = None):
         crlmsg = discord.Embed(
             title = "Extention reload",
             description = f"All extentions have been reloaded by {ctx.author}",
-            color = embed_color_warning
+            color = int(config['Embed Color']['Warning'], 16)
         )
         log_channel = bot.get_channel(log_channel_id)
         await log_channel.send(embed = crlmsg)
@@ -162,14 +172,14 @@ async def reload_extention(ctx, args = None):
         singlecrlmsg = discord.Embed(
             title = "Extention reload",
             description = f"{args} has been reloaded by {ctx.author}",
-            color = embed_color_warning
+            color = int(config['Embed color']['Warning'], 16)
         )
         log_channel = bot.get_channel(log_channel_id)
         await log_channel.send(embed = singlecrlmsg)
         
     else:
         raise
-    
+
     print(f"CMD_Watch: cogs_reload {args} has been executed by {ctx.author}")
 
 bot.run(secrets['Token'], bot=True, reconnect=True)

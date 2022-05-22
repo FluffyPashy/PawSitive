@@ -19,9 +19,6 @@ cwd = str(cwd)
 with open((cwd+'/settings/config.yml'), "r", encoding="utf-8") as file:
     config = yaml.load(file)
 
-embed_color_moderation = discord.Color.from_rgb(0, 0, 255)
-embed_color_warning = discord.Color.from_rgb(252, 0, 0)
-
 class Clear(commands.Cog):
 
     def __init__(self, bot):
@@ -46,7 +43,7 @@ class Clear(commands.Cog):
             clearmsg = discord.Embed(
                 title = 'Moderation',
                 description = f'All messages of #{ctx.channel} have been deleted by {ctx.author}',
-                color = embed_color_moderation)
+                color = int(config['Embed Color']['Moderation'], 16))
             
             await ctx.send(embed = clearmsg, delete_after = 10)
 
@@ -58,21 +55,21 @@ class Clear(commands.Cog):
                 clearmsgdigit = discord.Embed(
                     title = 'Moderation',
                     description = '**{}** messages have been deleted in #'.format(len(deleted) - 1) + f'{ctx.channel} by {ctx.author}',
-                    color = embed_color_moderation)
+                    color = int(config['Embed Color']['Moderation'], 16))
                 await ctx.send(embed = clearmsgdigit, delete_after = 10)
 
             if args.isdigit() == 1:
                 clearmsgdigit = discord.Embed(
                     title = 'Moderation',
                     description = '**{}** message has been deleted in #'.format(len(deleted) - 1) + f'{ctx.channel} by {ctx.author}',
-                    color = embed_color_moderation)
+                    color = int(config['Embed Color']['Moderation'], 16))
                 await ctx.send(embed = clearmsgdigit, delete_after = 10)
         else:
             await ctx.channel.purge(limit = 1)
             invalidarg = discord.Embed(
                 title = 'Whoops',
                 description = f'clear ~**{args}** is not a number!',
-                color = embed_color_warning)
+                color = int(config['Embed Color']['Moderation'], 16))
             await ctx.send(embed = invalidarg, delete_after = 10)
 
 class DelDM(commands.Cog):

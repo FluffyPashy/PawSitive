@@ -24,10 +24,10 @@ Roles:
 # Defines where you want the bot to write the log messages #! The Log Channel must be an ID
 Log Channel ID: 774266721321615370
 
-# While CustomLog is set to false, all modules will be active.
-CustomLog: false
-LogMemberJoin: true
-LogMemberLeave: true
-LogMsg: true
-LogMsgDel: true
-LogMsgEdit: true
+Embed Color:
+  Info: "0x007dff"
+  Update: "0x66ff00"
+  Announcement: "0x8003fc"
+  Warning: "0xffee00"
+  Critical: "0xfc0000"
+  Moderation: "0x0000ff"

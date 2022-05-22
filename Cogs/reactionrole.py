@@ -19,9 +19,6 @@ cwd = str(cwd)
 with open((cwd+'/settings/config.yml'), "r", encoding="utf-8") as file:
     config = yaml.load(file)
 
-embed_color_moderation = discord.Color.from_rgb(0, 0, 255)
-embed_color_warning = discord.Color.from_rgb(252, 0, 0)
-
 class reactionrole(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
