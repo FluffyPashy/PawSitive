@@ -12,13 +12,15 @@ Presence:
 Reaction Roles:
   Verify:
     Verify Role: "Verified"
-    Message ID: 977592456348586034
+    Message ID: 978090499145629696
     Emoji: ✅
     Verify Message: "TestWelcome"
 
 
 Roles:
   Dev: "Developer"
+  Mod: "Moderator"
+  Admin: "Admin"
   
 # LoggerSettings
 # Defines where you want the bot to write the log messages #! The Log Channel must be an ID
