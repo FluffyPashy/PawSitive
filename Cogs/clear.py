@@ -69,26 +69,8 @@ class Clear(commands.Cog):
             invalidarg = discord.Embed(
                 title = 'Whoops',
                 description = f'clear ~**{args}** is not a number!',
-                color = int(config['Embed Color']['Moderation'], 16))
+                color = int(config['Embed Color']['Critical'], 16))
             await ctx.send(embed = invalidarg, delete_after = 10)
-
-class DelDM(commands.Cog):
-
-    def __init__(self, bot):
-        self.bot = bot
-
-    # Commands
-    @commands.command()
-    async def deldm(self, ctx):
-        user = ctx.author
-
-        await ctx.channel.purge(limit = 1)
-
-        async for message in user.history(limit = 100):
-            if message.author == self.bot.user:
-                await message.delete()
-
-
+            
 def setup(bot):
     bot.add_cog(Clear(bot))
-    bot.add_cog(DelDM(bot))
