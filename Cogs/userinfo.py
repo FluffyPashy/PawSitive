@@ -5,6 +5,8 @@ from ruamel import yaml
 from ruamel.yaml import YAML
 from pathlib import Path
 
+import datetime
+
 ########################################################################
 # Define some things
 ########################################################################
@@ -33,24 +35,67 @@ class userinfo(commands.Cog):
     async def userinfo(self, ctx, user: discord.Member):
         #delete command message
         await ctx.message.delete()
+        
+        #create embed message with information from given userid
+        embed = discord.Embed(title=f"{user}", description=f"{user.mention}", color= int(config['Embed Color']['Info'], 16))
+        embed.set_thumbnail(url=user.avatar_url)
+        embed.add_field(name="Nickname", value=user.nick, inline=True)
+        embed.add_field(name="Status", value=user.raw_status, inline=True)
+        embed.add_field(name="Roles", value=", ".join([role.mention for role in user.roles if role.name != "@everyone"]), inline=True)
+        await ctx.send(embed=embed, delete_after=60)
 
-        #if user is not in server send embed message with error
-        if user not in ctx.guild.members:
-            embed = discord.Embed(title="Error", description="User not found in server", color= int(config['Embed Color']['Warning'], 16))
-            await ctx.send(embed=embed)
-        else:
-            #create embed message with information from given userid
-            embed = discord.Embed(title=f"{user}", description=f"{user.mention}", color= int(config['Embed Color']['Info'], 16))
-            embed.set_thumbnail(url=user.avatar_url)
-            embed.add_field(name="User ID", value=user.id, inline=True)
-            embed.add_field(name="Nickname", value=user.nick, inline=True)
-            embed.add_field(name="Status", value=user.status, inline=True)
-            embed.add_field(name="Joined Server", value=user.joined_at, inline=True)
-            embed.add_field(name="Created Account", value=user.created_at, inline=True)
-            embed.add_field(name="Roles", value=len(user.roles), inline=True)
-            #send embed message
-            await ctx.send(embed=embed)
+class userinfo_mod(commands.Cog):
+
+    def __init__(self, bot):
+        self.bot = bot
+
+    #userinfo command user has role moderator or admin
+    @commands.command(name= "userinfo_mod", aliases = ["uim"], hidden = True, pass_context = True)
+    #has one of these roles: moderator, admin
+    @commands.has_any_role(config['Roles']['Mod'], config['Roles']['Admin'])
+    async def userinfo_mod(self, ctx, user: discord.Member):
+        #delete command message
+        await ctx.message.delete()
+
+        #create embed message with information from given userid
+        embed = discord.Embed(title=f"{user}", description=f"{user.mention}", color= int(config['Embed Color']['Info'], 16))
+        embed.set_thumbnail(url=user.avatar_url)
+        embed.add_field(name="User ID", value=user.id, inline=True)
+        embed.add_field(name="Nickname", value=user.nick, inline=True)
+        embed.add_field(name="Status", value=f"{user.raw_status}\n{user.activity}", inline=True)
+
+        #Calculate user creation and joinend date until now in days
+        created_ago = f"{(datetime.datetime.now() - user.created_at).days}"
+        joinend_ago = f"{(datetime.datetime.now() - user.joined_at).days}"
+
+
+        # days = int(created_at_days_ago)
+        # years = days / 365
+        # rest_of_years = years % 1
+        # years -= rest_of_years
+        # month = rest_of_years * 30.417
+        # rest_of_month = month % 1
+        # month -= rest_of_month
+        # days = int(rest_of_month * 30.417)
+        # rest_of_days = days % 1
+        # days -= rest_of_days
+        
+        #create function to convert days to years, months, days
+        def days_convert(days):
+            years = days // 365
+            days = days % 365
+            months = days // 30
+            days = days % 30
+            return (years, months, days)
+
+        #embed message with joinend and created date in YYYY-MM-DD format
+        embed.add_field(name="Created", value=f"{user.created_at.strftime('%d %b %Y')}\n **-** {days_convert(int(created_ago))[0]} years, {days_convert(int(created_ago))[1]} months, {days_convert(int(created_ago))[2]} days ago", inline=True)
+        embed.add_field(name="Joinend", value=f"{user.joined_at.strftime('%d %b %Y')}\n **-** {days_convert(int(joinend_ago))[0]} years, {days_convert(int(joinend_ago))[1]} months, {days_convert(int(joinend_ago))[2]} days ago", inline=True)
+
+        embed.add_field(name="Roles", value=", ".join([role.mention for role in user.roles if role.name != "@everyone"]), inline=True)
+        await ctx.send(embed=embed, delete_after=60)
 
 
 def setup(bot):
     bot.add_cog(userinfo(bot))
+    bot.add_cog(userinfo_mod(bot))
