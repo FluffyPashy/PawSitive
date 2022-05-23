@@ -56,7 +56,7 @@ class Greetings(commands.Cog):
         self._last_member = None
 
 # Intents
-intents = discord.Intents.default()
+intents = discord.Intents.all()
 intents.members = True
 
 bot = commands.Bot(config['Prefix'], intents = intents)
@@ -122,7 +122,7 @@ async def change_presence():
 async def restart(ctx):
     bot_restart = discord.Embed(
         title = f"{bot.user.name} is restarting!",
-        color = int(config['embed color']['warning'], 16),
+        color = int(config['Embed Color']['Warning'], 16),
         timestamp = datetime.datetime.now(datetime.timezone.utc)
     )
     bot_restart.set_author(
@@ -172,7 +172,7 @@ async def reload_extention(ctx, args = None):
         singlecrlmsg = discord.Embed(
             title = "Extention reload",
             description = f"{args} has been reloaded by {ctx.author}",
-            color = int(config['Embed color']['Warning'], 16)
+            color = int(config['Embed Color']['Warning'], 16)
         )
         log_channel = bot.get_channel(log_channel_id)
         await log_channel.send(embed = singlecrlmsg)
